@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Manipulacion del DOM</title>
+</head>
+<body>
+	<h1>Manipulacion Manual del Dom</h1>
+	<form  id="todo-form" >
+		<input type="text" id="todo-item" name="todoItem" placeholder="Enter Task ...">
+		<input type="submit" value="Send!">
+	</form>
+
+	<ul id="todo-list"></ul>
+</body>
+<script >
+	const d = document;
+	  
+	  
+
+	// El state
+	const state = {
+		todoList:[],
+	}
+
+	// El template
+	const template = () => {
+		if (state.todoList.length < 1) return `<p>Lista sin Cargas</p>`;
+
+		let todos = state.todoList.map(item => `<li>${item}</li>`).join("");
+		// console.log(todos)
+		return todos
+		// const html = 
+		// });
+	};
+
+	// El renderizado 
+	const render = () => {
+		// console.log(state)
+		const $list = d.getElementById("todo-list");
+		// console.log(!$list)
+		if(!$list) return;
+
+		$list.innerHTML = template()
+	}
+
+	d.addEventListener("DOMContentLoaded", render);
+	d.addEventListener("submit", ev => {
+		if (!(ev.target.matches("#todo-form"))) return false;
+		ev.preventDefault()
+		const $item = d.getElementById("todo-item");
+		if(!$item) return;
+		
+		// Actualiza el state
+		state.todoList.push($item.value);
+
+		render();
+
+		$item.value = "";
+		$item.focus();
+		console.log(state)
+	})	
+</script>
+</html>
