@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Manipulacion del DOM</title>
+</head>
+<body>
+	<h1>Manipulacion Manual del Dom</h1>
+
+	<form  id="todo-form" >
+		<input type="text" id="todo-item" name="todoItem" placeholder="Enter Task ...">
+		<input type="submit" value="Send!">
+	</form>
+
+	<ul id="todo-list"></ul>
+</body>
+
+<script>
+	const d = document;
+	  
+	// El state
+	const state = {
+		todoList:[],
+	};
+
+	// El template
+	const template = () => {
+		if (template.data.todoList.length < 1) return `<p>Lista sin Cargas</p>`;
+
+		let todos = template.data.todoList.map(item => `<li>${item}</li>`).join("");
+		// console.log(todos)
+		return todos
+	};
+
+	// Agregar un state local  (data) al componente, agregando un atributo state a la funcion template, everything in JS is an object so its possible
+	template.data = {
+		todoList: [],
+	}
+
+	// El renderizado 
+	const render = () => {
+		const $list = d.getElementById("todo-list");
+		if(!$list) return;
+
+		$list.innerHTML = template()
+	}
+
+	// Actualizar el state de forma recativa
+	const setState = obj => {
+		for (const key in obj) {
+			if (template.data.hasOwnProperty(key)) {
+				template.data[key] = obj[key]
+			};
+		};
+
+		render();
+	};
+
+	// stringify to create a unlinked copy of State and then parse it to recover the original json format of the State copy
+	const getState = obj => JSON.parse(JSON.stringify(template.data));
+
+
+
+	d.addEventListener("DOMContentLoaded", render);
+	
+	// Valore por default
+	// setState({
+	// 	todoList: ['Tarea1', "Tarea2"]
+	// }) 
+
+	d.addEventListener("submit", ev => {
+		if (!(ev.target.matches("#todo-form"))) return false;
+		ev.preventDefault()
+
+		const $item = d.getElementById("todo-item");
+		if(!$item) return;
+
+		// Actualiza el state
+		// state.todoList.push($item.value); //Mala practica modificar el state directamente,  use a getter/setter like method instead
+		const lastState = getState();
+		lastState.todoList.push($item.value);
+		setState({todoList: lastState.todoList});
+
+		$item.value = "";
+		$item.focus();	
+
+		// console.log(state, template.data)
+		// console.log(function instanceof Object)
+	})	
+</script>
+</html>
