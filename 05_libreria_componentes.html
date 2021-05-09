@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Manipulacion del DOM</title>
+</head>
+<body>
+	<h1>Manipulacion del Dom Reactiva</h1>
+
+	<form  id="todo-form" >
+		<input type="text" id="todo-item" name="todoItem" placeholder="Enter Task ...">
+		<input type="submit" value="Send!">
+	</form>
+
+	<ul id="todo-list"></ul>
+</body>
+
+<script src="./Component.js"></script>
+<script>
+	const d = document;
+	const app = new Component ({
+		el:"#todo-list",
+		data:{
+			todoList: []
+		},
+		template: function (props) {
+			// console.log(props.todoList)
+
+			if (props.todoList.length < 1) return `<p>Lista sin Cargas</p>`;
+
+			let todos = props.todoList.map(item => `<li>${item}</li>`).join("");
+			// console.log(todos)
+		    return todos
+	    },
+	});
+	
+
+	d.addEventListener("DOMContentLoaded", app.render());
+
+	d.addEventListener("submit", ev => {
+		if (!(ev.target.matches("#todo-form"))) return false;
+		ev.preventDefault()
+		
+		const $item = d.getElementById("todo-item");
+
+		let lastState = app.getState();
+		console.log(lastState)
+
+		lastState.todoList.push($item.value);
+
+		app.setState({
+			todoList: lastState.todoList
+		});
+
+		$item.value = "";
+		$item.focus();	
+		
+	})	
+</script>
+</html>
